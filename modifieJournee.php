@@ -13,19 +13,19 @@ else{
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <style>
         body{
-            margin-top: 40px;
+            margin-top: 4%;
             text-align: center;
         }
         a{
             text-decoration: none;
         }
         a.button{
-            font-size: 60px;
+            font-size: 375%;
             border: 1px solid gray;
             border-radius: 30px;
             background-color: #464646;
             color: white;
-            padding: 20px 20px
+            padding: 2% 2%;
         }
         a:hover{
             text-decoration: none;
@@ -45,57 +45,93 @@ else{
 
 ?>
 
-<h1 style="font-size: 60px">Modification des données</h1>
+<h1 style="font-size: 375%">Modification des données</h1>
 
-<h1 style="font-size: 60px; margin-top: 120px; text-decoration: underline">Modifier une journée</h1>
+<h1 style="font-size: 375%; margin-top: 10%; text-decoration: underline">Modifier une journée</h1>
 
 <?php
 
     if(isset($_GET['id'])){
-        $donnees = $bdd->query("SELECT * FROM Horaire WHERE Id = '".$_GET['id']."'")->fetch();
+        if(isset($_GET['error'])){
+            echo "<h1 style='font-size: 312%; margin-top: 8%; color: orangered'>Veuillez saisir des heures cohérentes !</h1>";
+        }
+        $donnees = $bdd->query("SELECT * FROM Horaire WHERE Id = '".$_GET['id']."' AND IdUser = '".$_SESSION['id']."'")->fetch();
         ?>
-        <form <?= "action='updateJourneePost.php?modifieJournee=".$_GET['id']."'" ?> method="POST" style="margin-top: 100px">
-            <label style="font-size: 60px"><span style="margin-left: 170px">Date</span> : <input style="font-size: 40px" type="date" name="date" <?= "value='".date('Y-m-d' ,strtotime($donnees['Datage']))."'" ?> disabled></label><br>
-            <label style="font-size: 60px">Heure de début : <input style="font-size: 40px; margin-right: 230px" type="time" name="HD" <?= "value='".$donnees['HDebut']."'" ?> required></label><br>
-            <label style="font-size: 60px">Heure de fin : <input style="font-size: 40px; margin-right: 166px" type="time" name="HF" <?= "value='".$donnees['HFin']."'" ?> required></label><br>
+        <form <?= "action='updateJourneePost.php?modifieJournee=".$_GET['id']."'" ?> method="POST" style="margin-top: 10%;">
+            <div class="row">
+                <div class="col-sm-6" style="text-align: right">
+                    <label style="font-size: 375%">Date :</label>
+                </div>
+                <div class="col-sm-6" style="text-align: left">
+                    <input style="font-size: 250%; margin-top: 3%" type="date" name="date" <?= "value='".date('Y-m-d' ,strtotime($donnees['Datage']))."'" ?> disabled>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6" style="text-align: right">
+                    <label style="font-size: 375%">Heure de début :</label>
+                </div>
+                <div class="col-sm-6" style="text-align: left">
+                    <input style="font-size: 250%; margin-top: 3%" type="time" name="HD" <?= "value='".$donnees['HDebut']."'" ?> required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6" style="text-align: right">
+                    <label style="font-size: 375%">Heure de fin :</label>
+                </div>
+                <div class="col-sm-6" style="text-align: left">
+                    <input style="font-size: 250%; margin-top: 3%" type="time" name="HF" <?php if($donnees['HFin'] != null) echo "value='".$donnees['HFin']."'"; else echo "value='00:00'"; ?> required>
+                </div>
+            </div>
             <?php
             if(!$SantosUser){
                 ?>
-                <label style="font-size: 60px; margin-left: 10px">Pause : <input style="font-size: 40px; margin-right: 20px" type="time" name="coupure" <?= "value='".$donnees['Coupure']."'" ?> required></label><br>
+                <div class="row">
+                    <div class="col-sm-6" style="text-align: right">
+                        <label style="font-size: 375%">Pause :</label>
+                    </div>
+                    <div class="col-sm-6" style="text-align: left">
+                        <input style="font-size: 250%; margin-top: 3%" type="time" name="coupure" <?= "value='".$donnees['Coupure']."'" ?> required>
+                    </div>
+                </div>
                 <?php
             }
             ?>
-            <label style="font-size: 60px; margin-left: 60px">Découche :
-                <?php
-                if($donnees['Decouchage'] == 1){
-                    echo "<label style='font-size: 48px' for='oui'>Oui </label> <input style='width: 40px; height: 40px' name='decouche' type='radio' id='oui' value='oui' checked>";
-                    echo "<label style='font-size: 48px; margin-left: 30px' for='non'>Non </label> <input style='width: 40px; height: 40px' name='decouche' type='radio' id='non' value='non'>";
-                }
-                else{
-                    echo "<label style='font-size: 48px' for='oui'>Oui </label> <input style='width: 40px; height: 40px' name='decouche' type='radio' id='oui' value='oui'>";
-                    echo "<label style='font-size: 48px; margin-left: 30px' for='non'>Non </label> <input style='width: 40px; height: 40px' name='decouche' type='radio' id='non' value='non' checked>";
-                }
-                ?>
-            </label>
-            <input type="submit" value="Modifier la journée" style="font-size: 50px; margin-top: 60px">
+            <div class="row">
+                <div class="col-sm-6" style="text-align: right">
+                    <label style="font-size: 375%">Découche :</label>
+                </div>
+                <div class="col-sm-6" style="text-align: left">
+                    <?php
+                    if($donnees['Decouchage'] == 1){
+                        echo "<label style='font-size: 300%; margin-top: 3%' for='oui'>Oui </label> <input style='width: 34%; height: 34%; margin-left: 2%' name='decouche' type='radio' id='oui' value='oui' checked>";
+                        echo "<label style='font-size: 300%; margin-top: 3%; margin-left: -16%' for='non'>Non </label> <input style='width: 34%; height: 34%; margin-left: 2%' name='decouche' type='radio' id='non' value='non'>";
+                    }
+                    else{
+                        echo "<label style='font-size: 300%; margin-top: 3%' for='oui'>Oui </label> <input style='width: 34%; height: 34%; margin-left: 2%' name='decouche' type='radio' id='oui' value='oui'>";
+                        echo "<label style='font-size: 300%; margin-top: 3%; margin-left: -16%' for='non'>Non </label> <input style='width: 34%; height: 34%; margin-left: 2%' name='decouche' type='radio' id='non' value='non' checked>";
+                    }
+                    ?>
+                </div>
+            </div>
+            <input type="submit" value="Modifier la journée" style="font-size: 312%; margin-top: 8%">
         </form>
         <?php
             if(isset($_GET['supprimer'])){
                 ?>
-                <div style="margin-top: 140px">
+                <div style="margin-top: 14%">
                     <a class="button" style="background-color: #F85050" <?= "href='updateJourneePost.php?supprimer=true&IdHoraire=".$donnees['Id']."'" ?>>Êtes-vous sûr ?</a>
                 </div>
                 <?php
             }
             else{
                 ?>
-                <div style="margin-top: 140px">
+                <div style="margin-top: 14%">
                     <a class="button" style="background-color: #F85050" <?= "href='modifieJournee.php?id=".$donnees['Id']."&supprimer'" ?>>Supprimer la journée</a>
                 </div>
                 <?php
             }
         ?>
-        <div style="margin-top: 140px">
+        <div style="bottom: 14%; left: 0; right: 0; margin-left: auto; margin-right: auto; width: auto;  position: absolute">
             <a class="button" <?= "href='modifieJournee.php?mois=".date('m', strtotime($donnees['Datage']))."&annee=".date('Y', strtotime($donnees['Datage']))."'" ?>>Retour</a>
         </div>
         <?php
@@ -105,8 +141,8 @@ else{
 ?>
 
 <form action="modifieJournee.php" method="GET" id="myform">
-    <label style="font-size: 60px; margin-top: 30px;">Mois :
-        <select style="font-size: 50px" name="mois" oninput="loadForm()">
+    <label style="font-size: 375%; margin-top: 5%">Mois :
+        <select style="font-size: 84%" name="mois" oninput="loadForm()">
             <?php
             for($i = 1; $i < 13; $i++){
                 if($i < 10){
@@ -125,8 +161,8 @@ else{
             ?>
         </select>
     </label>
-    <label style="font-size: 60px; margin-top: 30px; margin-left: 30px">Année :
-        <select style="font-size: 50px" name="annee" oninput="loadForm()">
+    <label style="font-size: 375%; margin-top: 5%; margin-left: 5%">Année :
+        <select style="font-size: 84%" name="annee" oninput="loadForm()">
             <?php
             $request = $bdd->query('SELECT DISTINCT YEAR(Datage) AS Annee FROM Horaire WHERE IdUser = "'.$_SESSION['id'].'"');
             $rien = true;
@@ -144,18 +180,18 @@ else{
     </label>
 </form>
 
-<div style="border: 1px solid black; margin: 0 auto; margin-top: 80px;height: 900px; width: 90%; border-radius: 20px; overflow: auto;">
+<div style="border: 1px solid black; top: 30%; margin: 0 6%; width: 88%; bottom: 24%; overflow: auto; position: absolute; border-radius: 30px">
 
     <?php
-        $request = $bdd->query("SELECT * FROM Horaire WHERE IdUSer = '".$_SESSION['id']."' AND MONTH(Datage) = '".$_GET['mois']."' AND YEAR(datage) = '".$_GET['annee']."'");
+        $request = $bdd->query("SELECT * FROM Horaire WHERE IdUSer = '".$_SESSION['id']."' AND MONTH(Datage) = '".$_GET['mois']."' AND YEAR(datage) = '".$_GET['annee']."' ORDER BY DAY(Datage)");
         $none = true;
         while($donnees = $request->fetch()){
             $none = false;
             ?>
             <a <?= "href='modifieJournee.php?id=".$donnees['Id']."'" ?> style="color: black">
-            <div class="row" style="border: 1px solid black; width: 96%; margin: 30px auto; border-radius: 20px; background-color: #666666; color: white; padding: 10px 0">
-                <div class="col-sm-6"><h1 style="font-size: 50px"><?= date('d/m/Y', strtotime($donnees['Datage'])) ?></h1></div>
-                <div class="col-sm-6"><h1 style="font-size: 50px"><?= date('H:i', strtotime($donnees['HDebut'])) ?> - <?= date('H:i', strtotime($donnees['HFin'])) ?></h1></div>
+            <div class="row" style="border: 1px solid black; width: 96%; margin: 30px auto; border-radius: 20px; background-color: #666666; color: white; padding: 1% 0">
+                <div class="col-sm-6"><h1 style="font-size: 312%"><?= date('d/m/Y', strtotime($donnees['Datage'])) ?></h1></div>
+                <div class="col-sm-6"><h1 style="font-size: 312%"><?= date('H:i', strtotime($donnees['HDebut'])) ?> - <?php if($donnees['HFin'] != null) echo date('H:i', strtotime($donnees['HFin'])); else echo "ERROR"; ?></h1></div>
             </div>
             </a>
             <?php
@@ -163,14 +199,14 @@ else{
 
         if($none){
             ?>
-            <h1 style="font-size: 60px; font-style: italic; width: auto; margin: 300px auto">Aucune donnée pour cette période</h1>
+            <h1 style="font-size: 375%; font-style: italic; width: auto; margin: 40% auto">Aucune donnée pour cette période</h1>
             <?php
         }
     ?>
 
 </div>
-        <div style="margin-top: 60px">
-            <a class="button" href="updateJournee.php">Retour</a>
+        <div style="bottom: 14%; left: 0; right: 0; margin-left: auto; margin-right: auto; width: auto;  position: absolute">
+            <a class="button" href="updateJournee.php?modifie">Retour</a>
         </div>
     <?php } ?>
 

@@ -10,16 +10,17 @@ else{
 <head>
     <meta charset="UTF8" />
     <title>Gestion Horaire</title>
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
     <style>
         body{
-            margin-top: 40px;
+            margin-top: 4%;
             text-align: center;
         }
         table{
-            font-size: 28px;
+            font-size: 175%;
             border-collapse: collapse;
             text-align: center;
-            margin: 0 20px;
+            margin: 0 2%;
         }
         td{
             border: 1px solid black;
@@ -28,10 +29,18 @@ else{
         a{
             text-decoration: none;
         }
+        a.button{
+            font-size: 375%;
+            border: 1px solid gray;
+            border-radius: 30px;
+            background-color: #464646;
+            color: white;
+            padding: 2% 2%;
+        }
     </style>
 </head>
 <body>
-    <h1 style="font-size: 60px">Gestion des horaires</h1>
+    <h1 style="font-size: 375%">Gestion des horaires</h1>
 
     <?php
         include_once 'function/fonctionHeures.php';
@@ -119,11 +128,11 @@ else{
         <tr><td style="color: white">f</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
         <tr><td>TOTAL</td><td></td><td></td><td></td><td></td><td><?= $strNbHeureTotale ?></td><td><?= $nbDecouchage ?></td></tr>
     </table>
-    <div style="margin-top: 140px">
-        <a style="font-size: 60px; border: 1px solid gray; border-radius: 30px; background-color: #464646; color: white; padding: 20px 20px" href="updateJournee.php">Modifier la liste</a>
+    <div style="margin-top: 14%">
+        <a class="button" style="position: relative; padding-right: 10%" href="updateJournee.php">Menu <i style="font-size: 120%; position: absolute; right: 5%" class='bx bxs-truck'></i></a>
     </div>
-    <div style="margin-top: 80px; margin-bottom: 50px">
-        <a style="font-size: 60px; border: 1px solid gray; border-radius: 30px; background-color: #464646; color: white; padding: 20px 20px" href="historique.php">Historique des données</a>
+    <div style="margin-top: 8%">
+        <a class="button" href="historique.php">Historique des données</a>
     </div>
     </body>
     </html>

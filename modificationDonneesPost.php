@@ -17,13 +17,7 @@ include_once 'function/fonctionHeures.php';
                 $heureTravailleStr = differenceHeures($_POST['HD'], $_POST['HF']);
 
                 if(!$estSantos){
-                    switch($_POST['coupure']){
-                        case "45min" : $coupure = "00:45:00"; break;
-                        case "1h15" : $coupure = "01:15:00"; break;
-                        case "1h30" : $coupure = "01:30:00"; break;
-                        default: $coupure = "00:00:00"; break;
-                    }
-
+                    $coupure = $_POST['coupure'];
                     if(strtotime($heureTravailleStr) > strtotime($coupure)){
                         switch($_POST['decouche']){
                             case "oui": $decouche = 1; break;
