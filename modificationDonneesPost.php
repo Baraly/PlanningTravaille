@@ -59,7 +59,7 @@ include_once 'function/fonctionHeures.php';
                 ));
 
                 if(!$errorDataBase)
-                    echo "<h1 style='font-size: 60px; margin-top: 200px'>ERROR DataBase</h1>";
+                    echo "<h1 style='font-size: 60px; margin-top: 200px; text-align: center'>ERROR DataBase</h1>";
                 else
                     header("location: planning.php");
             }

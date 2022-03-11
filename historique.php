@@ -42,7 +42,7 @@ else{
         echo "<h1 style='font-size: 312%; margin-top: 300px; text-align: center; font-style: italic'>Vous n'avez encore aucune donnée</h1>";
     ?>
     </div>
-    <div style="bottom: 26%; left: 0; right: 0; margin-left: auto; margin-right: auto; width: auto;  position: absolute">
+    <div style="bottom: 14%; left: 0; right: 0; margin-left: auto; margin-right: auto; width: auto;  position: absolute">
         <a style="font-size: 375%; border: 1px solid gray; border-radius: 30px; background-color: #464646; color: white; padding: 2% 2%" href="planning.php">Retourner à la liste</a>
     </div>
 </body>
