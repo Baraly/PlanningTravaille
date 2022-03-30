@@ -62,8 +62,8 @@ else {
         }
         $donnees = $bdd->query("SELECT * FROM Horaire WHERE Id = '" . $_GET['id'] . "' AND IdUser = '" . $_SESSION['id'] . "'")->fetch();
         ?>
-        <form <?= "action='updateJourneePost.php?modifieJournee=" . $_GET['id'] . "'" ?> method="POST"
-                                                                                         style="margin-top: 10%;">
+        <form <?= "action='modificationDonneesPost.php?modifieJournee=" . $_GET['id'] . "'" ?> method="POST"
+                                                                                               style="margin-top: 10%;">
             <div class="row">
                 <div class="col-sm-6" style="text-align: right">
                     <label style="font-size: 375%">Date :</label>
@@ -163,8 +163,6 @@ else {
                                         }
                                         ?>
                                     </select>
-                                    <span id="printCoupure"
-                                          style="font-size: 275%"></span>
                     </div>
                     <?php
                 } else {
@@ -175,6 +173,14 @@ else {
                     </div>
                     <?php
                 } ?>
+            </div>
+            <div class="row">
+                <div class="col-sm-6"></div>
+                <div class="col-sm-3" style="text-align: center">
+                    <span id="printCoupure"
+                          style="font-size: 275%"><?= " ( " . date("H", strtotime($donnees['Coupure'])) . "h" . date("i", strtotime($donnees['Coupure'])) . " ) " ?></span>
+                </div>
+                <div class="col-sm-3"></div>
             </div>
             <div class="row">
                 <div class="col-sm-6" style="text-align: right">
@@ -197,7 +203,7 @@ else {
         <?php
         if (isset($_GET['supprimer'])) {
             ?>
-            <div style="margin-top: 14%">
+            <div style="margin-top: 10%">
                 <a class="button"
                    style="background-color: #F85050" <?= "href='updateJourneePost.php?supprimer=true&IdHoraire=" . $donnees['Id'] . "'" ?>>Êtes-vous
                     sûr ?</a>
@@ -205,7 +211,7 @@ else {
             <?php
         } else {
             ?>
-            <div style="margin-top: 14%">
+            <div style="margin-top: 10%">
                 <a class="button"
                    style="background-color: #F85050" <?= "href='modifieJournee.php?id=" . $donnees['Id'] . "&supprimer'" ?>>Supprimer
                     la journée</a>
