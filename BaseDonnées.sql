@@ -30,12 +30,3 @@ CREATE TABLE Pause(
     HFin TIME,
     FOREIGN KEY(IdHoraire) REFERENCES Horaire(Id)
 );
-
-INSERT INTO User VALUES(1, "Bronsin", "Stéphane", "stefetlo@hotmail.com", "Mr", "092715", 1);
-INSERT INTO User VALUES(2, "Bronsin", "Baptiste", "baptiste.bronsin@outlook.com", "Mr", "010209", 1);
-INSERT INTO User VALUES(3, "Nocenti", "Gary", "garynadege@live.fr", "Mr", "111000", 1);
-
-INSERT INTO Horaire VALUES(1, 1, '2022-03-01', '05:00:00', '17:30:00', '01:15:00', 1);
-INSERT INTO Horaire VALUES(2, 1, '2022-03-02', '05:00:00', '15:30:00', '01:15:00', 0);
-INSERT INTO Horaire VALUES(3, 1, '2022-03-03', '05:25:00', '20:12:00', '01:30:00', 1);
-INSERT INTO Horaire VALUES(4, 1, '2022-03-04', '05:10:00', '15:51:00', '01:15:00', 0);

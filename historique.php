@@ -10,6 +10,8 @@ else{
 <html lang="fr">
 <head>
     <title>Historique des données</title>
+    <meta charset="UTF8"/>
+    <script src="function/timeout.js"></script>
     <style>
         body{
             margin-top: 4%;

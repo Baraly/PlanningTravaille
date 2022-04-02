@@ -9,6 +9,7 @@ else {
     <html lang="fr">
     <head>
         <meta charset="UTF8"/>
+        <script src="function/timeout.js"></script>
         <title>Modification de la liste</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
               integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
