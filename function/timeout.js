@@ -1,4 +1,4 @@
 function redirectpage(){
-    window.location("http://baraly.fr/Planning/index.php");
+    window.location = "http://baraly.fr/Planning/index.php";
 }
-setTimeout('redirectpage()', 10 * 60 * 1000);
+setTimeout('redirectpage()', 200000);
