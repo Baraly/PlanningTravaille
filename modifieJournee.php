@@ -61,7 +61,7 @@ else {
         if (isset($_GET['error'])) {
             echo "<h1 style='font-size: 312%; margin-top: 8%; color: orangered'>Veuillez saisir des heures cohérentes !</h1>";
         }
-        $donnees = $bdd->query("SELECT * FROM Horaire WHERE Id = '" . $_GET['id'] . "' AND IdUser = '" . $_SESSION['id'] . "'")->fetch();
+        $donnees = $bdd->query("SELECT * FROM Horaire WHERE Datage = '" . $_GET['id'] . "' AND IdUser = '" . $_SESSION['id'] . "'")->fetch();
         ?>
         <form <?= "action='modificationDonneesPost.php?modifieJournee=" . $_GET['id'] . "'" ?> method="POST"
                                                                                                style="margin-top: 10%;">
@@ -206,7 +206,7 @@ else {
             ?>
             <div style="margin-top: 10%">
                 <a class="button"
-                   style="background-color: #F85050" <?= "href='updateJourneePost.php?supprimer=true&IdHoraire=" . $donnees['Id'] . "'" ?>>Êtes-vous
+                   style="background-color: #F85050" <?= "href='updateJourneePost.php?supprimer=true&IdHoraire=" . $donnees['Datage'] . "'" ?>>Êtes-vous
                     sûr ?</a>
             </div>
             <?php
@@ -214,7 +214,7 @@ else {
             ?>
             <div style="margin-top: 10%">
                 <a class="button"
-                   style="background-color: #F85050" <?= "href='modifieJournee.php?id=" . $donnees['Id'] . "&supprimer'" ?>>Supprimer
+                   style="background-color: #F85050" <?= "href='modifieJournee.php?id=" . $donnees['Datage'] . "&supprimer'" ?>>Supprimer
                     la journée</a>
             </div>
             <?php
@@ -270,12 +270,12 @@ else {
         <div style="border: 1px solid black; top: 30%; margin: 0 6%; width: 88%; bottom: 24%; overflow: auto; position: absolute; border-radius: 30px">
 
             <?php
-            $request = $bdd->query("SELECT * FROM Horaire WHERE IdUSer = '" . $_SESSION['id'] . "' AND MONTH(Datage) = '" . $_GET['mois'] . "' AND YEAR(datage) = '" . $_GET['annee'] . "' ORDER BY DAY(Datage)");
+            $request = $bdd->query("SELECT * FROM Horaire WHERE IdUser = '" . $_SESSION['id'] . "' AND MONTH(Datage) = '" . $_GET['mois'] . "' AND YEAR(Datage) = '" . $_GET['annee'] . "' ORDER BY DAY(Datage)");
             $none = true;
             while ($donnees = $request->fetch()) {
                 $none = false;
                 ?>
-                <a <?= "href='modifieJournee.php?id=" . $donnees['Id'] . "'" ?> style="color: black">
+                <a <?= "href='modifieJournee.php?id=" . $donnees['Datage'] . "'" ?> style="color: black">
                     <div class="row"
                          style="border: 1px solid black; width: 96%; margin: 30px auto; border-radius: 20px; background-color: #666666; color: white; padding: 1% 0">
                         <div class="col-sm-6"><h1

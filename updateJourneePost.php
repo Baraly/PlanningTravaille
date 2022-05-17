@@ -25,10 +25,9 @@ if (isset($_GET['ajoutNow'])) {
 
 
 if (isset($_GET['pause'])) {
-    $donnees = $bdd->query("SELECT Id FROM Horaire WHERE IdUser = '" . $_SESSION['id'] . "' AND Datage = '" . date('Y-m-d') . "'")->fetch();
-    $insert = $bdd->prepare("INSERT INTO Pause(IdHoraire, HDebut) VALUES(:idH, :HB)");
+    $insert = $bdd->prepare("INSERT INTO Pause(IdUser, HDebut) VALUES(:idU, :HB)");
     $errorDataBase = $insert->execute(array(
-        'idH' => $donnees['Id'],
+        'idU' => $_SESSION['id'],
         'HB' => date('H:i')
     ));
     if (!$errorDataBase)
@@ -38,8 +37,7 @@ if (isset($_GET['pause'])) {
 }
 
 if (isset($_GET['pauseFin'])) {
-    $donnees = $bdd->query("SELECT Id FROM Horaire WHERE IdUser = '" . $_SESSION['id'] . "' AND Datage = '" . date('Y-m-d') . "'")->fetch();
-    $errorDataBase = $bdd->exec("UPDATE Pause SET HFin = '" . date('H:i') . "' WHERE IdHoraire = " . $donnees['Id'] . " AND HFin IS NULL");
+    $errorDataBase = $bdd->exec("UPDATE Pause SET HFin = '" . date('H:i') . "' WHERE IdUser = " . $_SESSION['id'] . " AND HFin IS NULL");
 
     if (!$errorDataBase)
         echo "<h1 style='font-size: 60px; margin-top: 200px'>ERROR DataBase</h1>";
@@ -69,7 +67,7 @@ if (isset($_GET['finitNow'])) {
         if ($coupure != '00:00:00')
             $errorDataBase &= $bdd->exec("UPDATE Horaire SET Coupure = '$coupure' WHERE Datage = '" . date('Y-m-d') . "' AND IdUser = '" . $_SESSION['id'] . "'");
     } else {
-        $request = $bdd->query("SELECT * FROM Pause WHERE IdHoraire = " . $donnees['Id']);
+        $request = $bdd->query("SELECT * FROM Pause WHERE IdUser = " . $_SESSION['id']);
         $minutesSomme = 0;
         while ($d = $request->fetch()) {
             $minutesSomme += (date('H', strtotime($d['HFin'])) * 60 + date('i', strtotime($d['HFin']))) - (date('H', strtotime($d['HDebut'])) * 60 + date('i', strtotime($d['HDebut'])));
@@ -82,7 +80,7 @@ if (isset($_GET['finitNow'])) {
         $errorDataBase &= $bdd->exec("UPDATE Horaire SET Coupure = '$coupure' WHERE Datage = '" . date('Y-m-d') . "' AND IdUser = '" . $_SESSION['id'] . "'");
 
         if ($errorDataBase) {
-            $bdd->exec("DELETE FROM Pause WHERE IdHoraire = " . $donnees['Id']);
+            $bdd->exec("DELETE FROM Pause WHERE IdUser = " . $_SESSION['id']);
         }
     }
 
@@ -111,11 +109,9 @@ if (isset($_GET['pasDodoCamion'])) {
 }
 
 if (isset($_GET['supprimer'])) {
-    $donnees = $bdd->query("SELECT Datage FROM Horaire WHERE Id = '" . $_GET['IdHoraire'] . "'")->fetch();
-    $errorDataBase = $bdd->exec("DELETE FROM Horaire WHERE Id = '" . $_GET['IdHoraire'] . "'");
-
+    $errorDataBase = $bdd->exec("DELETE FROM Horaire WHERE Datage = '" . $_GET['IdHoraire'] . "' AND IdUser = '".$_SESSION['id']."'");
     if (!$errorDataBase)
         echo "<h1 style='font-size: 60px; margin-top: 200px'>ERROR DataBase</h1>";
     else
-        header("location: modifieJournee.php?mois=" . date('m', strtotime($donnees['Datage'])) . "&annee=" . date('Y', strtotime($donnees['Datage'])));
+        header("location: modifieJournee.php?mois=" . date('m', strtotime($_GET['IdHoraire'])) . "&annee=" . date('Y', strtotime($_GET['IdHoraire'])));
 }

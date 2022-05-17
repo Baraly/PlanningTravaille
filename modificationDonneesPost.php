@@ -62,7 +62,7 @@ if (isset($_GET['ajout'])) {
 }
 
 if (isset($_GET['modifieJournee'])) {
-    $donnees = $bdd->query("SELECT * FROM Horaire WHERE Id = '" . $_GET['modifieJournee'] . "'")->fetch();
+    $donnees = $bdd->query("SELECT * FROM Horaire WHERE Datage = '" . $_GET['modifieJournee'] . "' AND IdUser='" . $_SESSION['id'] . "'")->fetch();
 
     $okDataBase = true;
 
@@ -70,15 +70,15 @@ if (isset($_GET['modifieJournee'])) {
     if ($tempsTravaille > 0) {
 
         if ($donnees['HDebut'] != date('H:i:s', strtotime($_POST['HD'])))
-            $okDataBase &= $bdd->exec("UPDATE Horaire SET HDebut = '" . date('H:i:s', strtotime($_POST['HD'])) . "' WHERE Id = '" . $_GET['modifieJournee'] . "'");
+            $okDataBase &= $bdd->exec("UPDATE Horaire SET HDebut = '" . date('H:i:s', strtotime($_POST['HD'])) . "' WHERE Datage = '" . $_GET['modifieJournee'] . "' AND IdUser='" . $_SESSION['id'] . "'");
 
         if ($donnees['HFin'] != date('H:i:s', strtotime($_POST['HF'])) or $donnees['HFin'] == null)
-            $okDataBase &= $bdd->exec("UPDATE Horaire SET HFin = '" . date('H:i:s', strtotime($_POST['HF'])) . "' WHERE Id = '" . $_GET['modifieJournee'] . "'");
+            $okDataBase &= $bdd->exec("UPDATE Horaire SET HFin = '" . date('H:i:s', strtotime($_POST['HF'])) . "' WHERE Datage = '" . $_GET['modifieJournee'] . "' AND IdUser='" . $_SESSION['id'] . "'");
 
 
         if ($bdd->query("SELECT * FROM User WHERE Id = '" . $_SESSION['id'] . "' AND Santos = 0")->fetch()) {
             if ($donnees['Coupure'] != date('H:i:s', strtotime($_POST['coupure']) and (date('H', strtotime($_POST['coupure'])) * 60 + date('i', strtotime($_POST['coupure'])))) > $tempsTravaille) {
-                $okDataBase &= $bdd->exec("UPDATE Horaire SET Coupure = '" . date('H:i:s', strtotime($_POST['coupure'])) . "'  WHERE Id = '" . $_GET['modifieJournee'] . "'");
+                $okDataBase &= $bdd->exec("UPDATE Horaire SET Coupure = '" . date('H:i:s', strtotime($_POST['coupure'])) . "'  WHERE Datage = '" . $_GET['modifieJournee'] . "' AND IdUser='" . $_SESSION['id'] . "'");
             }
         } else {
             $coupure = $_POST['coupure'];
@@ -97,7 +97,7 @@ if (isset($_GET['modifieJournee'])) {
             }
 
             if ($coupure != date('H:i:s', strtotime($donnees['Coupure'])))
-                $okDataBase &= $bdd->exec("UPDATE Horaire SET Coupure = '$coupure' WHERE Id = '" . $_GET['modifieJournee'] . "'");
+                $okDataBase &= $bdd->exec("UPDATE Horaire SET Coupure = '$coupure' WHERE Datage = '" . $_GET['modifieJournee'] . "' AND IdUser='" . $_SESSION['id'] . "'");
         }
 
         $decouchage = 0;
@@ -105,7 +105,7 @@ if (isset($_GET['modifieJournee'])) {
             $decouchage = 1;
 
         if ($donnees['Decouchage'] != $decouchage)
-            $okDataBase &= $bdd->exec("UPDATE Horaire SET Decouchage = '$decouchage' WHERE Id = '" . $_GET['modifieJournee'] . "'");
+            $okDataBase &= $bdd->exec("UPDATE Horaire SET Decouchage = '$decouchage' WHERE Datage = '" . $_GET['modifieJournee'] . "' AND IdUser='" . $_SESSION['id'] . "'");
 
         if ($okDataBase)
             header("location: modifieJournee.php?mois=" . date('m', strtotime($donnees['Datage'])) . "&annee=" . date('Y', strtotime($donnees['Datage'])));
