@@ -194,7 +194,7 @@ else {
                 </table>
                 <hr>
                 <?php
-                $request = $bdd->query("SELECT * FROM Horaire WHERE MONTH(Datage) = '" . date('m') . "' AND YEAR(Datage) = '" . date('Y') . "' AND IdUser = '" . $_SESSION['id'] . "'");
+                $request = $bdd->query("SELECT * FROM Horaire WHERE MONTH(Datage) = '" . date('m') . "' AND YEAR(Datage) = '" . date('Y') . "' AND HFin IS NOT NULL AND IdUser = '" . $_SESSION['id'] . "'");
                 $nbHeureTotale = 0;
                 while ($donnee = $request->fetch()) {
                     $heureTravailleStr = differenceHeures($donnee['HDebut'], $donnee['HFin']);

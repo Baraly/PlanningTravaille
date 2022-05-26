@@ -19,6 +19,7 @@
             padding: 2% 1%;
             border: none;
             border-bottom: 1px gray solid;
+            border-radius: 0;
             margin: 2% 0;
             width: 80%;
             font-size: 350%;

@@ -36,6 +36,14 @@ else {
             a:hover {
                 text-decoration: none;
             }
+
+            .formSelecteur {
+                font-size: 96%;
+                width: 100%;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                margin: 5% 1% 0;
+            }
         </style>
     </head>
     <body>
@@ -229,42 +237,44 @@ else {
         ?>
 
         <form action="modifieJournee.php" method="GET" id="myform">
-            <label style="font-size: 375%; margin-top: 5%">Mois :
-                <select style="font-size: 84%" name="mois" oninput="loadForm()">
-                    <?php
-                    for ($i = 1; $i < 13; $i++) {
-                        if ($i < 10) {
-                            if ($_GET['mois'] == ("0" . $i))
-                                echo "<option value='" . ("0" . $i) . "' selected>" . mois("0" . $i) . "</option>";
-                            else
-                                echo "<option value='" . ("0" . $i) . "'>" . mois("0" . $i) . "</option>";
-                        } else {
-                            if ($_GET['mois'] == $i)
-                                echo "<option value='" . $i . "' selected>" . mois($i) . "</option>";
-                            else
-                                echo "<option value='" . $i . "'>" . mois($i) . "</option>";
+            <div class="formSelecteur">
+                <label style="font-size: 375%; text-align: right">Mois :
+                    <select style="font-size: 84%" name="mois" oninput="loadForm()">
+                        <?php
+                        for ($i = 1; $i < 13; $i++) {
+                            if ($i < 10) {
+                                if ($_GET['mois'] == ("0" . $i))
+                                    echo "<option value='" . ("0" . $i) . "' selected>" . mois("0" . $i) . "</option>";
+                                else
+                                    echo "<option value='" . ("0" . $i) . "'>" . mois("0" . $i) . "</option>";
+                            } else {
+                                if ($_GET['mois'] == $i)
+                                    echo "<option value='" . $i . "' selected>" . mois($i) . "</option>";
+                                else
+                                    echo "<option value='" . $i . "'>" . mois($i) . "</option>";
+                            }
                         }
-                    }
-                    ?>
-                </select>
-            </label>
-            <label style="font-size: 375%; margin-top: 5%; margin-left: 5%">Année :
-                <select style="font-size: 84%" name="annee" oninput="loadForm()">
-                    <?php
-                    $request = $bdd->query('SELECT DISTINCT YEAR(Datage) AS Annee FROM Horaire WHERE IdUser = "' . $_SESSION['id'] . '"');
-                    $rien = true;
-                    while ($donnees = $request->fetch()) {
-                        $rien = false;
-                        if ($_GET['annee'] == $donnees['Annee'])
-                            echo "<option value='" . $donnees['Annee'] . "' selected>" . $donnees['Annee'] . "</option>";
-                        else
-                            echo "<option value='" . $donnees['Annee'] . "'>" . $donnees['Annee'] . "</option>";
-                    }
-                    if ($rien)
-                        echo "<option value='" . date('Y') . "'>" . date('Y') . "</option>";
-                    ?>
-                </select>
-            </label>
+                        ?>
+                    </select>
+                </label>
+                <label style="font-size: 375%">Année :
+                    <select style="font-size: 84%" name="annee" oninput="loadForm()">
+                        <?php
+                        $request = $bdd->query('SELECT DISTINCT YEAR(Datage) AS Annee FROM Horaire WHERE IdUser = "' . $_SESSION['id'] . '"');
+                        $rien = true;
+                        while ($donnees = $request->fetch()) {
+                            $rien = false;
+                            if ($_GET['annee'] == $donnees['Annee'])
+                                echo "<option value='" . $donnees['Annee'] . "' selected>" . $donnees['Annee'] . "</option>";
+                            else
+                                echo "<option value='" . $donnees['Annee'] . "'>" . $donnees['Annee'] . "</option>";
+                        }
+                        if ($rien)
+                            echo "<option value='" . date('Y') . "'>" . date('Y') . "</option>";
+                        ?>
+                    </select>
+                </label>
+            </div>
         </form>
 
         <div style="border: 1px solid black; top: 30%; margin: 0 6%; width: 88%; bottom: 24%; overflow: auto; position: absolute; border-radius: 30px">
