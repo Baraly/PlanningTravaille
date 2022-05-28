@@ -47,7 +47,7 @@ else {
     date_default_timezone_set('Europe/Paris');
     $date = date('H:i');
 
-    $SantosUser = (boolean)$bdd->query("SELECT * FROM User WHERE Id = '" . $_SESSION['id'] . "' AND Santos = 1")->fetch();
+    $societe = (boolean)$bdd->query("SELECT * FROM User WHERE Id = '" . $_SESSION['id'] . "' AND Societe IS NOT NULL")->fetch();
 
 
     if (isset($_GET['modifie'])) {
@@ -96,7 +96,7 @@ else {
                         </div>
                     </div>
                     <?php
-                    if (!$SantosUser) {
+                    if (!$societe) {
                         ?>
                         <div class="row">
                             <div class="col-sm-6" style="text-align: right">
@@ -160,7 +160,7 @@ else {
                         </div>
                     </div>
                     <?php
-                    if (!$SantosUser) {
+                    if (!$societe) {
                         ?>
                         <div class="row">
                             <div class="col-sm-6" style="text-align: right">
@@ -225,7 +225,7 @@ else {
             </div>
             <?php
         } else {
-            if (!$SantosUser) {
+            if (!$societe) {
                 ?>
                 <div style="margin-top: 16%">
                     <a class="button" href="updateJourneePost.php?pause">Je me mets en pause</a>

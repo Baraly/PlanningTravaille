@@ -1,4 +1,3 @@
-<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -30,7 +29,7 @@
         }
 
         select {
-            width: 20%;
+            display: inline-block;
             font-size: 350%;
             padding: 2% 2%;
             margin: 2% 0;
@@ -180,15 +179,20 @@
             ?>
             <input type="tel" name="code" value="<?= $_GET['code'] ?>" minlength="6" maxlength="6"
                    placeholder="Clé personnelle" required><br>
-            <label style="font-size: 350%">Travaillez-vous chez Santos :
-                <select name="santos" required style="font-size: 80%">
+            <label style="font-size: 350%">Pour quelle entreprise travaillez-vous :
+                <select name="societe" required style="font-size: 100%">
                     <?php
-                    if ($_GET['santos'] == "oui") {
-                        echo "<option value='oui' selected>Oui</option>";
-                        echo "<option value='non'>Non</option>";
-                    } else {
-                        echo "<option value='oui'>Oui</option>";
-                        echo "<option value='non' selected>Non</option>";
+
+                    $bdd = null;
+                    include_once 'function/bdd.php';
+
+                    $request = $bdd->query("SELECT NomSociete FROM Coupure GROUP BY NomSociete");
+                    while ($donnee = $request->fetch()) {
+                        if ($_GET['societe'] == $donnee['NomSociete'])
+                            echo "<option value='" . $donnee['NomSociete'] . "' selected>" . $donnee['NomSociete'] . "</option>";
+                        else
+                            echo "<option value='" . $donnee['NomSociete'] . "'>" . $donnee['NomSociete'] . "</option>";
+
                     }
                     ?>
                 </select>
@@ -209,10 +213,18 @@
             <br>
             <input type="tel" name="code" minlength="6" maxlength="6" placeholder="Clé personnelle" required>
             <br>
-            <label style="font-size: 350%">Travaillez-vous chez Santos :
-                <select name="santos" required style="font-size: 80%">
-                    <option value="oui">Oui</option>
-                    <option value="non">Non</option>
+            <label style="font-size: 350%">Pour quelle entreprise travaillez-vous :
+                <select name="societe" required style="font-size: 100%">
+                    <?php
+                    $bdd = null;
+                    include_once 'function/bdd.php';
+
+                    $request = $bdd->query("SELECT NomSociete FROM Coupure GROUP BY NomSociete");
+                    while ($donnee = $request->fetch()) {
+                        echo "<option value='" . $donnee['NomSociete'] . "'>" . $donnee['NomSociete'] . "</option>";
+                    }
+                    ?>
+                    <option value="autre">Autre</option>
                 </select>
             </label>
             <?php

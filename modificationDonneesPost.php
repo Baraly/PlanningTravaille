@@ -6,7 +6,7 @@ $bdd = null;
 include_once 'function/bdd.php';
 include_once 'function/fonctionHeures.php';
 
-$estSantos = $bdd->query("SELECT * FROM User WHERE Id = '" . $_SESSION['id'] . "' AND Santos = 1")->fetch();
+$societe = $bdd->query("SELECT * FROM User WHERE Id = '" . $_SESSION['id'] . "' AND Societe IS NOT NULL")->fetch();
 
 if (isset($_GET['ajout'])) {
     if (!$bdd->query("SELECT * FROM Horaire WHERE DAY(Datage) = '" . date('d', strtotime($_POST['date'])) . "' AND MONTH(Datage) = '" . date('m', strtotime($_POST['date'])) . "' AND YEAR(Datage) = '" . date('Y', strtotime($_POST['date'])) . "' AND IdUSer = " . $_SESSION['id'])->fetch()) {
@@ -15,21 +15,23 @@ if (isset($_GET['ajout'])) {
 
             $heureTravailleStr = differenceHeures($_POST['HD'], $_POST['HF']);
 
-            if (!$estSantos) {
+            if (!$societe) {
                 $coupure = $_POST['coupure'];
                 if (strtotime($heureTravailleStr) < strtotime($coupure))
                     header("location: updateJournee.php?modifie=ajouterJournee&errorCoupure=true&date=" . $_POST['date'] . "&HD=" . $_POST['HD'] . "&HF=" . $_POST['HF'] . "&coupure=" . $_POST['coupure'] . "&decouche=" . $_POST['decouche']);
             } else {
                 $minutesHeureTravaille = (int)date('H', strtotime($heureTravailleStr)) * 60 + (int)date('i', strtotime($heureTravailleStr));
 
-                if ($minutesHeureTravaille < 390)
-                    $coupure = '00:00:00';
-                elseif ($minutesHeureTravaille < 570)
-                    $coupure = '00:45:00';
-                elseif ($minutesHeureTravaille < 750)
-                    $coupure = '01:15:00';
-                else
-                    $coupure = '01:30:00';
+                $requete = $bdd->query("SELECT * FROM Coupure, User WHERE Coupure.NomSociete = User.Societe AND User.Id = '" . $_SESSION['id'] . "'");
+
+                $coupure = "00:00:00";
+                while ($donnees = $requete->fetch()) {
+                    $debut = date('H', strtotime($donnees['BorneDebut'])) * 60 + date('i', strtotime($donnees['BorneDebut']));
+                    $fin = date('H', strtotime($donnees['BorneFin'])) * 60 + date('i', strtotime($donnees['BorneFin']));
+
+                    if ($minutesHeureTravaille >= $debut && $minutesHeureTravaille <= $fin)
+                        $coupure = $donnees['Temps'];
+                }
             }
 
             switch ($_POST['decouche']) {
@@ -76,7 +78,7 @@ if (isset($_GET['modifieJournee'])) {
             $okDataBase &= $bdd->exec("UPDATE Horaire SET HFin = '" . date('H:i:s', strtotime($_POST['HF'])) . "' WHERE Datage = '" . $_GET['modifieJournee'] . "' AND IdUser='" . $_SESSION['id'] . "'");
 
 
-        if ($bdd->query("SELECT * FROM User WHERE Id = '" . $_SESSION['id'] . "' AND Santos = 0")->fetch()) {
+        if ($bdd->query("SELECT * FROM User WHERE Id = '" . $_SESSION['id'] . "' AND Societe IS NULL")->fetch()) {
             if ($donnees['Coupure'] != date('H:i:s', strtotime($_POST['coupure']) and (date('H', strtotime($_POST['coupure'])) * 60 + date('i', strtotime($_POST['coupure'])))) > $tempsTravaille) {
                 $okDataBase &= $bdd->exec("UPDATE Horaire SET Coupure = '" . date('H:i:s', strtotime($_POST['coupure'])) . "'  WHERE Datage = '" . $_GET['modifieJournee'] . "' AND IdUser='" . $_SESSION['id'] . "'");
             }
@@ -86,18 +88,21 @@ if (isset($_GET['modifieJournee'])) {
                 $heureTravailleStr = differenceHeures($_POST['HD'], $_POST['HF']);
                 $minutesHeureTravaille = (int)date('H', strtotime($heureTravailleStr)) * 60 + (int)date('i', strtotime($heureTravailleStr));
 
-                if ($minutesHeureTravaille < 390)
-                    $coupure = '00:00:00';
-                elseif ($minutesHeureTravaille < 570)
-                    $coupure = '00:45:00';
-                elseif ($minutesHeureTravaille < 750)
-                    $coupure = '01:15:00';
-                else
-                    $coupure = '01:30:00';
-            }
+                $requete = $bdd->query("SELECT * FROM Coupure, User WHERE Coupure.NomSociete = User.Societe AND User.Id = '" . $_SESSION['id'] . "'");
 
+                $coupure = "00:00:00";
+                while ($donnee = $requete->fetch()) {
+                    $debut = date('H', strtotime($donnee['BorneDebut'])) * 60 + date('i', strtotime($donnee['BorneDebut']));
+                    $fin = date('H', strtotime($donnee['BorneFin'])) * 60 + date('i', strtotime($donnee['BorneFin']));
+
+                    if ($minutesHeureTravaille >= $debut && $minutesHeureTravaille <= $fin)
+                        $coupure = $donnee['Temps'];
+                }
+            }
+            
             if ($coupure != date('H:i:s', strtotime($donnees['Coupure'])))
                 $okDataBase &= $bdd->exec("UPDATE Horaire SET Coupure = '$coupure' WHERE Datage = '" . $_GET['modifieJournee'] . "' AND IdUser='" . $_SESSION['id'] . "'");
+
         }
 
         $decouchage = 0;
@@ -110,7 +115,7 @@ if (isset($_GET['modifieJournee'])) {
         if ($okDataBase)
             header("location: modifieJournee.php?mois=" . date('m', strtotime($donnees['Datage'])) . "&annee=" . date('Y', strtotime($donnees['Datage'])));
         else
-            echo "<h1 style='font-size: 60px; margin-top: 200px'>ERROR DataBase</h1>";
+            echo "<h1 style='font-size: 60px; margin-top: 200px; text-align: center'>ERROR DataBase</h1>";
     } else
         header("location: modifieJournee.php?error=true&id=" . $_GET['modifieJournee']);
 }

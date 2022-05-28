@@ -55,7 +55,7 @@ else {
     include_once 'function/fonctionHeures.php';
     include_once 'function/fonctionMois.php';
 
-    $SantosUser = (boolean)$bdd->query("SELECT * FROM User WHERE Id = '" . $_SESSION['id'] . "' AND Santos = 1")->fetch();
+    $societe = (boolean)$bdd->query("SELECT * FROM User WHERE Id = '" . $_SESSION['id'] . "' AND Societe IS NOT NULL")->fetch();
 
     ?>
 
@@ -105,40 +105,39 @@ else {
                 <div class="col-sm-6" style="text-align: right">
                     <label style="font-size: 375%">Pause :</label>
                 </div>
-                <?php if ($SantosUser) {
+                <?php if ($societe) {
                     $heureTravailleStr = differenceHeures($donnees['HDebut'], $donnees['HFin']);
                     $minutesHeureTravaille = (int)date('H', strtotime($heureTravailleStr)) * 60 + (int)date('i', strtotime($heureTravailleStr));
 
-                    if ($minutesHeureTravaille < 390)
-                        $coupure = '00:00:00';
-                    elseif ($minutesHeureTravaille < 570)
-                        $coupure = '00:45:00';
-                    elseif ($minutesHeureTravaille < 750)
-                        $coupure = '01:15:00';
-                    else
-                        $coupure = '01:30:00';
+                    $requete = $bdd->query("SELECT * FROM Coupure, User WHERE Coupure.NomSociete = User.Societe AND User.Id = '" . $_SESSION['id'] . "'");
+
+                    $coupure = "00:00:00";
+                    while ($donnee = $requete->fetch()) {
+                        $debut = date('H', strtotime($donnee['BorneDebut'])) * 60 + date('i', strtotime($donnee['BorneDebut']));
+                        $fin = date('H', strtotime($donnee['BorneFin'])) * 60 + date('i', strtotime($donnee['BorneFin']));
+
+                        if ($minutesHeureTravaille >= $debut && $minutesHeureTravaille <= $fin)
+                            $coupure = $donnee['Temps'];
+                    }
+
                     ?>
                     <div class="col-sm-6" style="text-align: left">
                         <?php
                         if ($coupure == "00:00:00") {
                         ?>
-                        <select id='selecteur' style='font-size: 275%; margin-top: 4%' name='coupure'
-                                oninput='loadCoupureAuto("0min")'>
+                        <select id='selecteur' style='font-size: 275%; margin-top: 4%' name='coupure'>
                             <?php
                             } else if ($coupure == "00:45:00") {
                             ?>
-                            <select id='selecteur' style='font-size: 275%; margin-top: 4%' name='coupure'
-                                    oninput='loadCoupureAuto("45min")'>
+                            <select id='selecteur' style='font-size: 275%; margin-top: 4%' name='coupure'>
                                 <?php
                                 } else if ($coupure == "01:15:00") {
                                 ?>
-                                <select id='selecteur' style='font-size: 275%; margin-top: 4%' name='coupure'
-                                        oninput='loadCoupureAuto("1h15")'>
+                                <select id='selecteur' style='font-size: 275%; margin-top: 4%' name='coupure'>
                                     <?php
                                     } else {
                                     ?>
-                                    <select id='selecteur' style='font-size: 275%; margin-top: 4%' name='coupure'
-                                            oninput='loadCoupureAuto("1h30")'>
+                                    <select id='selecteur' style='font-size: 275%; margin-top: 4%' name='coupure'>
                                         <?php
                                         }
                                         ?>
@@ -182,14 +181,6 @@ else {
                     </div>
                     <?php
                 } ?>
-            </div>
-            <div class="row">
-                <div class="col-sm-6"></div>
-                <div class="col-sm-3" style="text-align: center">
-                    <span id="printCoupure"
-                          style="font-size: 275%"><?= " ( " . date("H", strtotime($donnees['Coupure'])) . "h" . date("i", strtotime($donnees['Coupure'])) . " ) " ?></span>
-                </div>
-                <div class="col-sm-3"></div>
             </div>
             <div class="row">
                 <div class="col-sm-6" style="text-align: right">
@@ -318,13 +309,6 @@ else {
     <script type="text/javascript">
         function loadForm() {
             document.forms["myform"].submit();
-        }
-
-        function loadCoupureAuto(time) {
-            if (document.getElementById("selecteur").options[document.getElementById("selecteur").selectedIndex].value === "auto")
-                document.getElementById("printCoupure").innerHTML = " ( " + time + " )";
-            else
-                document.getElementById("printCoupure").innerHTML = "";
         }
     </script>
     </body>

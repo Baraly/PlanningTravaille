@@ -2,9 +2,9 @@
 session_start();
 
 if (!isset($_SESSION['id']))
-    header("location: index.php");
+    header("location: ../index.php");
 else {
-    include_once 'function/fonctionMois.php';
+    include_once '../function/fonctionMois.php';
 
     ?>
     <!DOCTYPE html>
@@ -13,7 +13,7 @@ else {
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=vice-width, initial-scale=1.0">
-        <script src="function/timeout.js"></script>
+        <script src="../function/timeout.js"></script>
         <title>Historique</title>
         <link
                 rel="stylesheet"
@@ -105,7 +105,8 @@ else {
 
     <?php
     $bdd = null;
-    include_once 'function/bdd.php';
+    include_once '../function/bdd.php';
+
     $request = $bdd->query('SELECT MONTH(Datage) AS Mois, YEAR(Datage) AS Annee FROM Horaire WHERE IdUser = "' . $_SESSION['id'] . '" GROUP BY Mois, Annee ORDER BY Annee, Mois');
 
     $rien = true;
@@ -158,7 +159,7 @@ else {
                         </div>
                         <div style="position: fixed; bottom: 6%; width: 100%; text-align: center">
                             <a style="font-size: 20px; border: 1px solid gray; border-radius: 10px; background-color: #464646; color: white; padding: 2% 2%; text-decoration: none"
-                               href="planning.php">Retourner à la liste</a>
+                               href="../planning.php">Retourner à la liste</a>
                         </div>
                         <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 

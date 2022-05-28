@@ -54,20 +54,30 @@ if (isset($_GET['finitNow'])) {
     $heureTravailleStr = differenceHeures($donnees['HDebut'], $donnees['HFin']);
     $minutesHeureTravaille = (int)date('H', strtotime($heureTravailleStr)) * 60 + (int)date('i', strtotime($heureTravailleStr));
 
-    if ($bdd->query("SELECT * FROM User WHERE Id = '" . $_SESSION['id'] . "' AND Santos = 1")->fetch()) {
-        if ($minutesHeureTravaille < 390)
+    if ($bdd->query("SELECT * FROM User WHERE Id = '" . $_SESSION['id'] . "' AND Societe IS NOT NULL")->fetch()) {
+        $requete = $bdd->query("SELECT * FROM Coupure, User WHERE Coupure.NomSociete = User.Societe AND User.Id = '" . $_SESSION['id'] . "'");
+
+        $coupure = "00:00:00";
+        while ($donnees = $requete->fetch()) {
+            $debut = date('H', strtotime($donnees['BorneDebut'])) * 60 + date('i', strtotime($donnees['BorneDebut']));
+            $fin = date('H', strtotime($donnees['BorneFin'])) * 60 + date('i', strtotime($donnees['BorneFin']));
+
+            if ($minutesHeureTravaille >= $debut && $minutesHeureTravaille <= $fin)
+                $coupure = $donnees['Temps'];
+        }
+        /*if ($minutesHeureTravaille < 390)
             $coupure = '00:00:00';
         elseif ($minutesHeureTravaille < 570)
             $coupure = '00:45:00';
         elseif ($minutesHeureTravaille < 750)
             $coupure = '01:15:00';
         else
-            $coupure = '01:30:00';
+            $coupure = '01:30:00';*/
 
         if ($coupure != '00:00:00')
             $errorDataBase &= $bdd->exec("UPDATE Horaire SET Coupure = '$coupure' WHERE Datage = '" . date('Y-m-d') . "' AND IdUser = '" . $_SESSION['id'] . "'");
     } else {
-        $request = $bdd->query("SELECT * FROM Pause WHERE IdUser = " . $_SESSION['id']);
+        $request = $bdd->query("SELECT * FROM Pause WHERE IdUser = '" . $_SESSION['id'] . "'");
         $minutesSomme = 0;
         while ($d = $request->fetch()) {
             $minutesSomme += (date('H', strtotime($d['HFin'])) * 60 + date('i', strtotime($d['HFin']))) - (date('H', strtotime($d['HDebut'])) * 60 + date('i', strtotime($d['HDebut'])));
@@ -77,7 +87,10 @@ if (isset($_GET['finitNow'])) {
 
         $coupure = $heures . ":" . $minutes . ":00";
 
-        $errorDataBase &= $bdd->exec("UPDATE Horaire SET Coupure = '$coupure' WHERE Datage = '" . date('Y-m-d') . "' AND IdUser = '" . $_SESSION['id'] . "'");
+        echo $coupure;
+
+        if ($heures != 0 || $minutes != 0)
+            $errorDataBase &= $bdd->exec("UPDATE Horaire SET Coupure = '$coupure' WHERE Datage = '" . date('Y-m-d') . "' AND IdUser = '" . $_SESSION['id'] . "'");
 
         if ($errorDataBase) {
             $bdd->exec("DELETE FROM Pause WHERE IdUser = " . $_SESSION['id']);
@@ -85,7 +98,7 @@ if (isset($_GET['finitNow'])) {
     }
 
     if (!$errorDataBase)
-        echo "<h1 style='font-size: 60px; margin-top: 200px'>ERROR DataBase</h1>";
+        echo "<h1 style='font-size: 60px; margin-top: 200px; text-align: center'>ERROR DataBase</h1>";
     else
         header("location: updateJournee.php");
 }
@@ -109,7 +122,7 @@ if (isset($_GET['pasDodoCamion'])) {
 }
 
 if (isset($_GET['supprimer'])) {
-    $errorDataBase = $bdd->exec("DELETE FROM Horaire WHERE Datage = '" . $_GET['IdHoraire'] . "' AND IdUser = '".$_SESSION['id']."'");
+    $errorDataBase = $bdd->exec("DELETE FROM Horaire WHERE Datage = '" . $_GET['IdHoraire'] . "' AND IdUser = '" . $_SESSION['id'] . "'");
     if (!$errorDataBase)
         echo "<h1 style='font-size: 60px; margin-top: 200px'>ERROR DataBase</h1>";
     else
